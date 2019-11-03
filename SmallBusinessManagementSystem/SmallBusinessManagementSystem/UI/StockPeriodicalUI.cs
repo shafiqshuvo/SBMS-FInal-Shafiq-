@@ -27,41 +27,28 @@ namespace SmallBusinessManagementSystem.UI
 
         private void searchStockButton_Click(object sender, EventArgs e)
         {
+            stockPeriodical.startDate = startDateTimePicker.Text;
+            stockPeriodical.endDate = endDateTimePicker.Text;
 
-            bool isExist = _stockPeriodicalManager.hasProductExist(stockPeriodical);
-            if (isExist)
+            if ((reorderLevelCheckBox.Checked) && _stockPeriodicalManager.searchStockByReorderLevel(stockPeriodical).Any())
             {
-                MessageBox.Show("Product Available");
-               
+
+                MessageBox.Show("Search Stock By Lower Re-order Level....");
+                stockSearchDataGridView.DataSource = _stockPeriodicalManager.searchStockByReorderLevel(stockPeriodical);
             }
+
+            else if ((!reorderLevelCheckBox.Checked) && _stockPeriodicalManager.searchStock(stockPeriodical).Any())
+            {
+                MessageBox.Show("Search stock By Selected Item .. ");
+                stockSearchDataGridView.DataSource = _stockPeriodicalManager.searchStock(stockPeriodical);
+            }
+           
             else
             {
-                MessageBox.Show("Product is Not Available");
+                MessageBox.Show("No Data Found Between:  "+stockPeriodical.startDate+ " And " +stockPeriodical.endDate);
                 return;
             }
-
-            if (!String.IsNullOrEmpty(startDateTimePicker.Text) && !String.IsNullOrEmpty(endDateTimePicker.Text))
-            {
-                stockPeriodical.startDate = startDateTimePicker.Text;
-                stockPeriodical.endDate = endDateTimePicker.Text;
-
-                if(_stockPeriodicalManager.searchStock(stockPeriodical).Any())
-                {
-                    stockSearchDataGridView.DataSource = _stockPeriodicalManager.searchStock(stockPeriodical);
-                }
-                else
-                {
-                    MessageBox.Show("No Data Found");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select Start and End date....");
-                return;
-               
-            }
-
-
+     
 
 
         }
@@ -81,7 +68,7 @@ namespace SmallBusinessManagementSystem.UI
 
         private void StockPeriodicalUI_Load(object sender, EventArgs e)
         {
-           
+            reorderLevelCheckBox.Checked = true;
             categoryComboBox.DataSource = _stockPeriodicalManager.GetCategoryList();
 
             categoryComboBox.ValueMember = "Code";

@@ -53,7 +53,44 @@ namespace SmallBusinessManagementSystem.Repository
             return searchPeriodicalStocks;
         }
 
+        public List<StockPeriodical> searchStockByReorderLevel(StockPeriodical stockPeriodical)
+        {
+            string connectionString = _connectionRepository.GetConnectionString();
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
 
+            string CommandString = @"SELECT * FROM StockPeriodical WHERE (StartDate  >= '" + stockPeriodical.startDate + "' AND EndDate <= '" + stockPeriodical.endDate + "') ORDER BY ReorederLevel ";
+            // SELECT* FROM Product_sales WHERE From_date >= '03-Jan-2013' AND To_date <= '09-Jan-2013'
+
+            SqlCommand sqlCommand = new SqlCommand(CommandString, sqlConnection);
+            sqlConnection.Open();
+
+            List<StockPeriodical> searchPeriodicalStocks = new List<StockPeriodical>();
+
+            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+
+            while (sqlDataReader.Read())
+            {
+                StockPeriodical _stockPeriodical = new StockPeriodical();
+
+                _stockPeriodical.ProductCode = Convert.ToString(sqlDataReader["Category"]) + Convert.ToString(sqlDataReader["Code"]);
+                _stockPeriodical.productName = Convert.ToString(sqlDataReader["Name"]);
+                _stockPeriodical.productCategory = Convert.ToString(sqlDataReader["Category"]);
+                _stockPeriodical.Reorderlavel = Convert.ToInt32(sqlDataReader["ReorederLevel"]);
+                _stockPeriodical.ExpiredDate = Convert.ToString(sqlDataReader["Expired Date"]);
+                _stockPeriodical.OpeningBalance = Convert.ToInt32(sqlDataReader["Openning Balance"]);
+                _stockPeriodical.In = Convert.ToInt32(sqlDataReader["In"]);
+                _stockPeriodical.Out = Convert.ToInt32(sqlDataReader["Out"]);
+                _stockPeriodical.ClosingBalance = Convert.ToInt32(sqlDataReader["Closing Balance"]);
+
+
+                searchPeriodicalStocks.Add(_stockPeriodical);
+            }
+
+            sqlConnection.Close();
+
+            // return list.Count >0 ? list : null ;
+            return searchPeriodicalStocks;
+        }
         public bool hasProductExist(StockPeriodical stockPeriodical)
         {
             bool Exist = false;

@@ -16,9 +16,14 @@ namespace SmallBusinessManagementSystem.Manager
         public List<StockPeriodical> searchStock(StockPeriodical stockPeriodical)
         {
             return _stockPeriodicalRepository.searchStock(stockPeriodical);
-            //return _purchaseRepotingRepository.SearchValue(purchaseRepotingModel);
+           
         }
-
+        //SEARCH BY LOWER REORDER LEVEL
+        public List<StockPeriodical> searchStockByReorderLevel(StockPeriodical stockPeriodical)
+        {
+            return _stockPeriodicalRepository.searchStockByReorderLevel(stockPeriodical);
+           
+        }
 
         public bool hasProductExist(StockPeriodical stockPeriodical)
         {
